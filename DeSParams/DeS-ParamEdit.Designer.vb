@@ -127,7 +127,7 @@ Partial Class DeSParam
         Me.Controls.Add(Me.lblGAFile)
         Me.Controls.Add(Me.btnBrowseParamdef)
         Me.Name = "DeSParam"
-        Me.Text = "Wulf's Demon's Souls Paramater Editor v0.700"
+        Me.Text = "Wulf's Demon's Souls Parameter Editor v0.800"
         CType(Me.dgvParams, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

@@ -4,6 +4,7 @@ Public Class DeSParam
 
     Dim bytes() As Byte
     Dim paramDef() As paramDefs
+    Dim bigEndian As Boolean = True
 
     Structure paramDefs
         Public paramName As String
@@ -86,20 +87,40 @@ Public Class DeSParam
     End Function
 
     Private Function Int16ToTwoByte(ByVal val As Integer) As Byte()
-        Return ReverseTwoBytes(BitConverter.GetBytes(Convert.ToInt16(val)))
+        If bigEndian Then
+            Return ReverseTwoBytes(BitConverter.GetBytes(Convert.ToInt16(val)))
+        Else
+            Return BitConverter.GetBytes(Convert.ToInt16(val))
+        End If
     End Function
     Private Function Int32ToFourByte(ByVal val As Integer) As Byte()
-        Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToInt32(val)))
+        If bigEndian Then
+            Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToInt32(val)))
+        Else
+            Return BitConverter.GetBytes(Convert.ToInt32(val))
+        End If
     End Function
     Private Function UInt16TotwoByte(ByVal val As UInteger) As Byte()
-        Return ReverseTwoBytes(BitConverter.GetBytes(Convert.ToUInt16(val)))
+        If bigEndian Then
+            Return ReverseTwoBytes(BitConverter.GetBytes(Convert.ToUInt16(val)))
+        Else
+            Return BitConverter.GetBytes(Convert.ToUInt16(val))
+        End If
     End Function
     Private Function UInt32ToFourByte(ByVal val As UInteger) As Byte()
-        Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToUInt32(val)))
+        If bigEndian Then
+            Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToUInt32(val)))
+        Else
+            Return BitConverter.GetBytes(Convert.ToUInt32(val))
+        End If
     End Function
     Private Function FloatToFourByte(ByVal val As String) As Byte()
         If IsNumeric(val) Then
-            Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToSingle(val)))
+            If bigEndian Then
+                Return ReverseFourBytes(BitConverter.GetBytes(Convert.ToSingle(val)))
+            Else
+                Return BitConverter.GetBytes(Convert.ToSingle(val))
+            End If
         Else
             Return {0, 0, 0, 0}
         End If
@@ -122,7 +143,7 @@ Public Class DeSParam
         For i = 0 To 3
             bArray(3 - i) = bytes(loc + i)
         Next
-
+        If Not bigEndian Then bArray = ReverseFourBytes(bArray)
         Return BitConverter.ToSingle(bArray, 0)
     End Function
     Private Function SIntFromTwo(ByVal loc As UInteger) As Int16
@@ -132,7 +153,7 @@ Public Class DeSParam
         For i = 0 To 1
             bArray(1 - i) = bytes(loc + i)
         Next
-
+        If Not bigEndian Then bArray = ReverseTwoBytes(bArray)
         tmpint = BitConverter.ToInt16(bArray, 0)
         Return tmpint
     End Function
@@ -143,25 +164,37 @@ Public Class DeSParam
         For i = 0 To 3
             bArray(3 - i) = bytes(loc + i)
         Next
-
+        If Not bigEndian Then bArray = ReverseFourBytes(bArray)
         tmpint = BitConverter.ToInt32(bArray, 0)
         Return tmpint
     End Function
     Private Function UIntFromTwo(ByVal loc As UInteger) As UInteger
         Dim tmpUint As UInteger = 0
 
-        For i = 0 To 1
-            tmpUint += Convert.ToUInt16(bytes(loc + i)) * &H100 ^ (1 - i)
-        Next
+        If bigEndian Then
+            For i = 0 To 1
+                tmpUint += Convert.ToUInt16(bytes(loc + i)) * &H100 ^ (1 - i)
+            Next
+        Else
+            For i = 0 To 1
+                tmpUint += Convert.ToUInt16(bytes(loc + i)) * &H100 ^ (i)
+            Next
+        End If
 
         Return tmpUint
     End Function
     Private Function UIntFromFour(ByVal loc As UInteger) As UInteger
         Dim tmpUint As UInteger = 0
 
-        For i = 0 To 3
-            tmpUint += Convert.ToUInt32(bytes(loc + i)) * &H100 ^ (3 - i)
-        Next
+        If bigEndian Then
+            For i = 0 To 3
+                tmpUint += Convert.ToUInt32(bytes(loc + i)) * &H100 ^ (3 - i)
+            Next
+        Else
+            For i = 0 To 3
+                tmpUint += Convert.ToUInt32(bytes(loc + i)) * &H100 ^ (i)
+            Next
+        End If
 
         Return tmpUint
     End Function
@@ -303,6 +336,12 @@ Public Class DeSParam
         Dim paramDefOffset As UInteger
 
         length = UIntFromFour(&H0)
+
+        If Not length = bytes.Length Then
+            bigEndian = False
+            length = UIntFromFour(&H0)
+        End If
+
         startOffset = UIntFromTwo(&H4)
         numEntries = UIntFromTwo(&H8)
         entryLength = UIntFromTwo(&HA)
@@ -314,15 +353,12 @@ Public Class DeSParam
         dgvParams.Columns.Add("ID (Hex)", "ID (Hex)")
         dgvParams.Columns.Add("ID (Dec)", "ID (Dec)")
 
-
         For i = 0 To numEntries - 1
             paramType = StrFromBytes(startOffset + &H40 + (entryLength * i))
             paramMin = SingleFromFour(startOffset + &H54 + (entryLength * i))
             paramMax = SingleFromFour(startOffset + &H58 + (entryLength * i))
             paramSize = UIntFromFour(startOffset + &H64 + (entryLength * i))
             paramName = StrFromBytes(startOffset + &H8C + (entryLength * i))
-
-
 
             paramDef(i).paramName = paramName
             paramDef(i).paramType = paramType
@@ -346,7 +382,6 @@ Public Class DeSParam
 
             offset = UIntFromFour(&H34 + (&HC * i))
 
-
             paramDefOffset = 0
 
             For j = 0 To paramDef.Length - 1
@@ -368,7 +403,10 @@ Public Class DeSParam
                     Case "u32"
                         row(j + 2) = UIntFromFour(offset + paramDefOffset)
                 End Select
+
                 paramDefOffset += paramDef(j).paramSize
+
+
             Next
 
             dgvParams.Rows.Add(row)
@@ -383,7 +421,7 @@ Public Class DeSParam
         Dim paramDefOffset As UInteger
         Dim offset As UInteger
 
-        For i = 1 To dgvParams.Rows.Count - 2
+        For i = 0 To dgvParams.Rows.Count - 2
             paramDefOffset = 0
 
             offset = UIntFromFour(&H34 + (&HC * i))
@@ -395,7 +433,7 @@ Public Class DeSParam
                     Case "f32"
                         InsBytes(offset + paramDefOffset, FloatToFourByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s8"
-                        InsBytes(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        InsBytes(offset + paramDefOffset, Int16ToTwoByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s16"
                         InsBytes(offset + paramDefOffset, Int16ToTwoByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s32"
@@ -411,5 +449,6 @@ Public Class DeSParam
             Next
         Next
         File.WriteAllBytes(txtParam.Text, bytes)
+        MsgBox("Save complete.")
     End Sub
 End Class
