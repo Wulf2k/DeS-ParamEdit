@@ -41,6 +41,12 @@ Public Class DeSParam
         End If
     End Sub
 
+    Public Sub sizeChange() Handles MyBase.Resize
+        dgvParams.Width = MyBase.Width - 35
+        dgvParams.Height = MyBase.Height - 145
+
+    End Sub
+
     Private Sub bAdd(ByRef bArr1() As Byte, ByVal bArr2() As Byte)
         Dim startIndex As Integer = bArr1.Length
 
