@@ -57,3 +57,4 @@ DeSParams/bin/Debug/DeSParams.exe.config
 DeSParams/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 *.suo
 *.suo
+*.cache
