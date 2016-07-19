@@ -88,6 +88,8 @@ Partial Class DeSParam
         '
         'dgvParams
         '
+        Me.dgvParams.AllowUserToAddRows = False
+        Me.dgvParams.AllowUserToDeleteRows = False
         Me.dgvParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvParams.Location = New System.Drawing.Point(12, 100)
         Me.dgvParams.Name = "dgvParams"

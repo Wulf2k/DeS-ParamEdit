@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Reflection
 
 Public Class DeSParam
 
@@ -420,7 +421,8 @@ Public Class DeSParam
             offset = UIntFromFour(&H38 + (&HC * i))
 
         Next
-
+        dgvParams.Columns(1).Frozen = True
+        dgvParams.AutoResizeColumns()
     End Sub
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         bytes = File.ReadAllBytes(txtParam.Text)
@@ -456,5 +458,11 @@ Public Class DeSParam
         Next
         File.WriteAllBytes(txtParam.Text, bytes)
         MsgBox("Save complete.")
+    End Sub
+
+    Private Sub DeSParam_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim systemType As Type = dgvParams.GetType()
+        Dim propertyInfo As PropertyInfo = systemType.GetProperty("DoubleBuffered", BindingFlags.Instance Or BindingFlags.NonPublic)
+        propertyInfo.SetValue(dgvParams, True, Nothing)
     End Sub
 End Class
