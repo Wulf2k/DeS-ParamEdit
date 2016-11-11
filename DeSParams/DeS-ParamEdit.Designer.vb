@@ -31,12 +31,14 @@ Partial Class DeSParam
         Me.dgvParams = New System.Windows.Forms.DataGridView()
         Me.btnOpen = New System.Windows.Forms.Button()
         Me.btnSave = New System.Windows.Forms.Button()
-        CType(Me.dgvParams, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
+        CType(Me.dgvParams,System.ComponentModel.ISupportInitialize).BeginInit
+        Me.SuspendLayout
         '
         'txtParamdef
         '
-        Me.txtParamdef.AllowDrop = True
+        Me.txtParamdef.AllowDrop = true
+        Me.txtParamdef.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.txtParamdef.Location = New System.Drawing.Point(89, 14)
         Me.txtParamdef.Name = "txtParamdef"
         Me.txtParamdef.Size = New System.Drawing.Size(440, 20)
@@ -44,7 +46,7 @@ Partial Class DeSParam
         '
         'lblGAFile
         '
-        Me.lblGAFile.AutoSize = True
+        Me.lblGAFile.AutoSize = true
         Me.lblGAFile.Location = New System.Drawing.Point(31, 17)
         Me.lblGAFile.Name = "lblGAFile"
         Me.lblGAFile.Size = New System.Drawing.Size(52, 13)
@@ -53,16 +55,19 @@ Partial Class DeSParam
         '
         'btnBrowseParamdef
         '
+        Me.btnBrowseParamdef.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnBrowseParamdef.Location = New System.Drawing.Point(532, 12)
         Me.btnBrowseParamdef.Name = "btnBrowseParamdef"
         Me.btnBrowseParamdef.Size = New System.Drawing.Size(75, 23)
         Me.btnBrowseParamdef.TabIndex = 30
         Me.btnBrowseParamdef.Text = "Browse"
-        Me.btnBrowseParamdef.UseVisualStyleBackColor = True
+        Me.btnBrowseParamdef.UseVisualStyleBackColor = true
         '
         'txtParam
         '
-        Me.txtParam.AllowDrop = True
+        Me.txtParam.AllowDrop = true
+        Me.txtParam.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.txtParam.Location = New System.Drawing.Point(89, 43)
         Me.txtParam.Name = "txtParam"
         Me.txtParam.Size = New System.Drawing.Size(440, 20)
@@ -70,7 +75,7 @@ Partial Class DeSParam
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
+        Me.Label1.AutoSize = true
         Me.Label1.Location = New System.Drawing.Point(46, 46)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(37, 13)
@@ -79,17 +84,21 @@ Partial Class DeSParam
         '
         'btnBrowseParam
         '
+        Me.btnBrowseParam.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnBrowseParam.Location = New System.Drawing.Point(532, 41)
         Me.btnBrowseParam.Name = "btnBrowseParam"
         Me.btnBrowseParam.Size = New System.Drawing.Size(75, 23)
         Me.btnBrowseParam.TabIndex = 33
         Me.btnBrowseParam.Text = "Browse"
-        Me.btnBrowseParam.UseVisualStyleBackColor = True
+        Me.btnBrowseParam.UseVisualStyleBackColor = true
         '
         'dgvParams
         '
-        Me.dgvParams.AllowUserToAddRows = False
-        Me.dgvParams.AllowUserToDeleteRows = False
+        Me.dgvParams.AllowUserToAddRows = false
+        Me.dgvParams.AllowUserToDeleteRows = false
+        Me.dgvParams.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom)  _
+            Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.dgvParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvParams.Location = New System.Drawing.Point(12, 100)
         Me.dgvParams.Name = "dgvParams"
@@ -98,25 +107,27 @@ Partial Class DeSParam
         '
         'btnOpen
         '
+        Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnOpen.Location = New System.Drawing.Point(451, 70)
         Me.btnOpen.Name = "btnOpen"
         Me.btnOpen.Size = New System.Drawing.Size(75, 23)
         Me.btnOpen.TabIndex = 37
         Me.btnOpen.Text = "Open"
-        Me.btnOpen.UseVisualStyleBackColor = True
+        Me.btnOpen.UseVisualStyleBackColor = true
         '
         'btnSave
         '
+        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnSave.Location = New System.Drawing.Point(532, 70)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(75, 23)
         Me.btnSave.TabIndex = 38
         Me.btnSave.Text = "Save"
-        Me.btnSave.UseVisualStyleBackColor = True
+        Me.btnSave.UseVisualStyleBackColor = true
         '
         'DeSParam
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(617, 618)
         Me.Controls.Add(Me.btnSave)
@@ -130,11 +141,11 @@ Partial Class DeSParam
         Me.Controls.Add(Me.btnBrowseParamdef)
         Me.Name = "DeSParam"
         Me.Text = "Wulf's Demon's Souls Parameter Editor v0.810"
-        CType(Me.dgvParams, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        CType(Me.dgvParams,System.ComponentModel.ISupportInitialize).EndInit
+        Me.ResumeLayout(false)
+        Me.PerformLayout
 
-    End Sub
+End Sub
     Friend WithEvents txtParamdef As System.Windows.Forms.TextBox
     Friend WithEvents lblGAFile As System.Windows.Forms.Label
     Friend WithEvents btnBrowseParamdef As System.Windows.Forms.Button
