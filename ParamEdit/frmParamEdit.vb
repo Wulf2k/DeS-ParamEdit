@@ -1,7 +1,11 @@
 ﻿Imports System.IO
 Imports System.Reflection
+Imports System.Threading
 
-Public Class DeSParam
+Public Class frmParamEdit
+
+    Shared Version As String
+    Shared VersionCheckUrl As String = "http://wulf2k.ca/souls/ParamEdit-ver.txt"
 
     Dim bytes() As Byte
     Dim paramDef() As paramDefs
@@ -17,12 +21,33 @@ Public Class DeSParam
         Public paramMax As Single
     End Structure
 
+    Private Async Sub updatecheck()
+        Try
+            Dim client As New Net.WebClient()
+            Dim content As String = Await client.DownloadStringTaskAsync(VersionCheckUrl)
+
+            Dim lines() As String = content.Split({vbCrLf, vbLf}, StringSplitOptions.None)
+            Dim latestVersion = lines(0)
+            Dim latestUrl = lines(1)
+
+            If latestVersion > Version.Replace(".", "") Then
+                btnUpdate.Tag = latestUrl
+                btnUpdate.Visible = True
+            End If
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+
     Private Sub btnBrowseParamdef_Click(sender As Object, e As EventArgs) Handles btnBrowseParamdef.Click
 
 
         Dim openDlg As New OpenFileDialog()
 
-        openDlg.Filter = "DeS Paramdef File|*paramdef"
+        openDlg.Filter = "Paramdef File|*paramdef"
         openDlg.Title = "Open your Paramdef file"
 
         If openDlg.ShowDialog() = Windows.Forms.DialogResult.OK Then
@@ -34,7 +59,7 @@ Public Class DeSParam
     Private Sub btnBrowseParam_Click(sender As Object, e As EventArgs) Handles btnBrowseParam.Click
         Dim openDlg As New OpenFileDialog()
 
-        openDlg.Filter = "DeS Param File|*param"
+        openDlg.Filter = "Param File|*param"
         openDlg.Title = "Open your Param file"
 
         If openDlg.ShowDialog() = Windows.Forms.DialogResult.OK Then
@@ -207,113 +232,6 @@ Public Class DeSParam
     End Function
 
 
-    Private Sub btnExtract_Click(sender As Object, e As EventArgs)
-        bytes = File.ReadAllBytes(txtParamdef.Text)
-
-        Dim length As UInteger
-        Dim startOffset As UInteger
-        Dim numEntries As UInteger
-        Dim entryLength As UInteger
-
-        Dim paramType As String
-        Dim paramSize As UInteger
-        Dim paramMin As Single
-        Dim paramMax As Single
-        Dim paramName As String
-        Dim paramDescOffset As UInteger
-
-
-        Dim offset As UInteger
-        Dim paramDefOffset As UInteger
-        Dim output As Byte() = {}
-
-
-        length = UIntFromFour(&H0)
-        startOffset = UIntFromTwo(&H4)
-        numEntries = UIntFromTwo(&H8)
-        entryLength = UIntFromTwo(&HA)
-
-        paramDescOffset = numEntries * entryLength + &H30
-
-        ReDim paramDef(numEntries - 1)
-
-        bAdd(output, System.Text.Encoding.ASCII.GetBytes("Name,VarType,VarSize,Min,Max,JPName,JPDesc" & Environment.NewLine))
-        For i = 0 To numEntries - 1
-            paramType = StrFromBytes(startOffset + &H40 + (entryLength * i))
-            paramMin = SingleFromFour(startOffset + &H54 + (entryLength * i))
-            paramMax = SingleFromFour(startOffset + &H58 + (entryLength * i))
-            paramSize = UIntFromFour(startOffset + &H64 + (entryLength * i))
-            paramName = StrFromBytes(startOffset + &H8C + (entryLength * i))
-
-
-
-            paramDef(i).paramName = paramName
-            paramDef(i).paramType = paramType
-            paramDef(i).paramSize = paramSize
-            paramDef(i).paramMin = paramMin
-            paramDef(i).paramMax = paramMax
-
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(paramName & "," & paramType & ",0x" & Hex(paramSize) & "," & _
-                Math.Round(paramMin, 2) & "," & Math.Round(paramMax, 2) & ","))
-            bAdd(output, bArrFromBytes(startOffset + (entryLength * i)))
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(","))
-            If Not paramDef(i).paramType = "dummy8" Then
-                bAdd(output, bArrFromBytes(paramDescOffset))
-                paramDescOffset += bArrFromBytes(paramDescOffset).Length + 1
-            End If
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(Environment.NewLine))
-        Next
-        File.WriteAllBytes(txtParamdef.Text & ".csv", output)
-
-        output = System.Text.Encoding.ASCII.GetBytes("ID,")
-        For i = 0 To paramDef.Length - 1
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(paramDef(i).paramName & ","))
-        Next
-        bAdd(output, System.Text.Encoding.ASCII.GetBytes(Environment.NewLine))
-        bytes = File.ReadAllBytes(txtParam.Text)
-        numEntries = UIntFromTwo(&HA)
-
-        For i = 0 To numEntries - 1
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(Hex(UIntFromFour(&H30 + (&HC * i))) & ","))
-
-
-
-            offset = UIntFromFour(&H34 + (&HC * i))
-            paramDefOffset = 0
-
-            For j = 0 To paramDef.Length - 1
-                Select Case paramDef(j).paramType
-                    Case "dummy8"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(","))
-                    Case "f32"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(SingleFromFour(offset + paramDefOffset) & ","))
-                    Case "s8"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(Convert.ToInt16(bytes(offset + paramDefOffset)) & ","))
-                    Case "s16"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(SIntFromTwo(offset + paramDefOffset) & ","))
-                    Case "s32"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(SIntFromFour(offset + paramDefOffset) & ","))
-                    Case "u8"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(Convert.ToInt16(bytes(offset + paramDefOffset)) & ","))
-                    Case "u16"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(UIntFromTwo(offset + paramDefOffset) & ","))
-                    Case "u32"
-                        bAdd(output, System.Text.Encoding.ASCII.GetBytes(UIntFromFour(offset + paramDefOffset) & ","))
-                End Select
-                paramDefOffset += paramDef(j).paramSize
-            Next
-
-            offset = UIntFromFour(&H38 + (&HC * i))
-
-
-            REM txtOutput.Text += StrFromBytes(offset) & Environment.NewLine
-            bAdd(output, bArrFromBytes(offset))
-            bAdd(output, System.Text.Encoding.ASCII.GetBytes(Environment.NewLine))
-        Next
-        File.WriteAllBytes(txtParam.Text & ".csv", output)
-
-    End Sub
-
     Private Sub txt_Drop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtParamdef.DragDrop, txtParam.DragDrop
         Dim file() As String = e.Data.GetData(DataFormats.FileDrop)
         sender.Text = file(0)
@@ -423,6 +341,12 @@ Public Class DeSParam
         Next
         dgvParams.Columns(1).Frozen = True
         dgvParams.AutoResizeColumns()
+
+        For each column as DataGridViewColumn In dgvparams.columns
+            column.SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
+
+
     End Sub
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         bytes = File.ReadAllBytes(txtParam.Text)
@@ -460,9 +384,52 @@ Public Class DeSParam
         MsgBox("Save complete.")
     End Sub
 
-    Private Sub DeSParam_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub ParamEdit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim systemType As Type = dgvParams.GetType()
         Dim propertyInfo As PropertyInfo = systemType.GetProperty("DoubleBuffered", BindingFlags.Instance Or BindingFlags.NonPublic)
         propertyInfo.SetValue(dgvParams, True, Nothing)
+
+
+        Version = lblVer.Text
+
+        Dim oldFileArg As String = Nothing
+        For Each arg In Environment.GetCommandLineArgs().Skip(1)
+            If arg.StartsWith("--old-file=") Then
+                oldFileArg = arg.Substring("--old-file=".Length)
+            Else
+                MsgBox("Unknown command line arguments")
+                oldFileArg = Nothing
+                Exit For
+            End If
+        Next
+        If oldFileArg IsNot Nothing Then
+            If oldFileArg.EndsWith(".old") Then
+                Dim t = New Thread(
+                    Sub()
+                    Try
+                        'Give the old version time to shut down
+                        Thread.Sleep(1000)
+                        File.Delete(oldFileArg)
+                    Catch ex As Exception
+                        Me.Invoke(Function() MsgBox("Deleting old version failed: " & vbCrLf & ex.Message, MsgBoxStyle.Exclamation))
+                    End Try
+                End Sub)
+                t.Start()
+            Else
+                MsgBox("Deleting old version failed: Invalid filename ", MsgBoxStyle.Exclamation)
+            End If
+        End If
+
+
+        updatecheck()
+    End Sub
+
+    Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
+        Dim updateWindow As New UpdateWindow(sender.tag)
+        updateWindow.ShowDialog()
+        If updateWindow.WasSuccessful Then
+            Process.Start(updateWindow.NewAssembly, """--old-file=" & updateWindow.OldAssembly & """")
+            Me.Close()
+        End If
     End Sub
 End Class

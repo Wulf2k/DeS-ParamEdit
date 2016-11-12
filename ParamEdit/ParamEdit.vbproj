@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6852A01B-5A0A-41C2-8636-6B7DB7492DB4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>DeSParams.My.MyApplication</StartupObject>
-    <RootNamespace>DeSParams</RootNamespace>
-    <AssemblyName>DeSParams</AssemblyName>
+    <StartupObject>ParamEdit.My.MyApplication</StartupObject>
+    <RootNamespace>ParamEdit</RootNamespace>
+    <AssemblyName>ParamEdit</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -20,7 +20,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>DeSParams.xml</DocumentationFile>
+    <DocumentationFile>ParamEdit.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,7 +30,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>DeSParams.xml</DocumentationFile>
+    <DocumentationFile>ParamEdit.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -50,6 +50,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -70,11 +71,11 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeS-ParamEdit.vb">
+    <Compile Include="frmParamEdit.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DeS-ParamEdit.Designer.vb">
-      <DependentUpon>DeS-ParamEdit.vb</DependentUpon>
+    <Compile Include="frmParamEdit.Designer.vb">
+      <DependentUpon>frmParamEdit.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -92,16 +93,25 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UpdateWindow.designer.vb">
+      <DependentUpon>UpdateWindow.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateWindow.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DeS-ParamEdit.resx">
-      <DependentUpon>DeS-ParamEdit.vb</DependentUpon>
+    <EmbeddedResource Include="frmParamEdit.resx">
+      <DependentUpon>frmParamEdit.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateWindow.resx">
+      <DependentUpon>UpdateWindow.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

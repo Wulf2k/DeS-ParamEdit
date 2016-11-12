@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class DeSParam
+Partial Class frmParamEdit
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -31,6 +31,8 @@ Partial Class DeSParam
         Me.dgvParams = New System.Windows.Forms.DataGridView()
         Me.btnOpen = New System.Windows.Forms.Button()
         Me.btnSave = New System.Windows.Forms.Button()
+        Me.btnUpdate = New System.Windows.Forms.Button()
+        Me.lblVer = New System.Windows.Forms.Label()
         CType(Me.dgvParams,System.ComponentModel.ISupportInitialize).BeginInit
         Me.SuspendLayout
         '
@@ -125,11 +127,34 @@ Partial Class DeSParam
         Me.btnSave.Text = "Save"
         Me.btnSave.UseVisualStyleBackColor = true
         '
-        'DeSParam
+        'btnUpdate
+        '
+        Me.btnUpdate.Location = New System.Drawing.Point(12, 69)
+        Me.btnUpdate.Name = "btnUpdate"
+        Me.btnUpdate.Size = New System.Drawing.Size(182, 23)
+        Me.btnUpdate.TabIndex = 78
+        Me.btnUpdate.Text = "Update Param Editor"
+        Me.btnUpdate.UseVisualStyleBackColor = true
+        Me.btnUpdate.Visible = false
+        '
+        'lblVer
+        '
+        Me.lblVer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.lblVer.AutoSize = true
+        Me.lblVer.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.lblVer.Location = New System.Drawing.Point(369, 75)
+        Me.lblVer.Name = "lblVer"
+        Me.lblVer.Size = New System.Drawing.Size(76, 13)
+        Me.lblVer.TabIndex = 77
+        Me.lblVer.Text = "2016.11.12.01"
+        '
+        'frmParamEdit
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(617, 618)
+        Me.Controls.Add(Me.btnUpdate)
+        Me.Controls.Add(Me.lblVer)
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.btnOpen)
         Me.Controls.Add(Me.dgvParams)
@@ -139,8 +164,8 @@ Partial Class DeSParam
         Me.Controls.Add(Me.txtParamdef)
         Me.Controls.Add(Me.lblGAFile)
         Me.Controls.Add(Me.btnBrowseParamdef)
-        Me.Name = "DeSParam"
-        Me.Text = "Wulf's Demon's Souls Parameter Editor v0.810"
+        Me.Name = "frmParamEdit"
+        Me.Text = "Wulf's Souls Series Parameter Editor"
         CType(Me.dgvParams,System.ComponentModel.ISupportInitialize).EndInit
         Me.ResumeLayout(false)
         Me.PerformLayout
@@ -155,5 +180,6 @@ End Sub
     Friend WithEvents dgvParams As System.Windows.Forms.DataGridView
     Friend WithEvents btnOpen As System.Windows.Forms.Button
     Friend WithEvents btnSave As System.Windows.Forms.Button
-
+    Friend WithEvents btnUpdate As Button
+    Friend WithEvents lblVer As Label
 End Class
