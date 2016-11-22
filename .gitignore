@@ -1,3 +1,9 @@
+# NuGet packages
+/packages
+
+# Build copy of readme
+Readme_compiled.html
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -31,9 +37,13 @@ $RECYCLE.BIN/
 # Thumbnails
 ._*
 
-# Files that might appear on external disk
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
 .Spotlight-V100
+.TemporaryItems
 .Trashes
+.VolumeIcon.icns
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -42,19 +52,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.exe
-DeSParams/bin/Debug/DeSParams.pdb
-DeSParams/bin/Debug/DeSParams.vshost.exe.config
-DeSParams/obj/Debug/DesignTimeResolveAssemblyReferences.cache
-DeSParams/obj/Debug/DeSParams.pdb
-DeSParams/obj/Debug/DeSParams.vbproj.GenerateResource.Cache
-DeSParams/obj/Debug/DeSParams.DeSParam.resources
-DeSParams/obj/Debug/TempPE/My Project.Resources.Designer.vb.dll
-DeSParams/obj/Debug/DeSParams.xml
-DeSParams/obj/Debug/DeSParams.vbproj.FileListAbsolute.txt
-DeSParams/obj/Debug/DeSParams.Resources.resources
-DeSParams/bin/Debug/DeSParams.xml
-DeSParams/bin/Debug/DeSParams.exe.config
-DeSParams/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+*.pdb
+*.rar
+*.Cache
 *.suo
-*.suo
-*.cache
+**/bin
+**/obj
+*.pfx
