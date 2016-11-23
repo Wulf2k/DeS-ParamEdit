@@ -40,8 +40,6 @@ Public Class frmParamEdit
         End Try
     End Sub
 
-
-
     Private Sub btnBrowseParamdef_Click(sender As Object, e As EventArgs) Handles btnBrowseParamdef.Click
 
 
@@ -67,11 +65,6 @@ Public Class frmParamEdit
         End If
     End Sub
 
-    Public Sub sizeChange() Handles MyBase.Resize
-        dgvParams.Width = MyBase.Width - 35
-        dgvParams.Height = MyBase.Height - 145
-
-    End Sub
 
     Private Sub bAdd(ByRef bArr1() As Byte, ByVal bArr2() As Byte)
         Dim startIndex As Integer = bArr1.Length
@@ -316,13 +309,13 @@ Public Class frmParamEdit
                     Case "f32"
                         row(j + 2) = SingleFromFour(offset + paramDefOffset)
                     Case "s8"
-                        row(j + 2) = Convert.ToInt16(bytes(offset + paramDefOffset))
+                        row(j + 2) = CSByte(bytes(offset + paramDefOffset))
                     Case "s16"
                         row(j + 2) = SIntFromTwo(offset + paramDefOffset)
                     Case "s32"
                         row(j + 2) = SIntFromFour(offset + paramDefOffset)
                     Case "u8"
-                        row(j + 2) = Convert.ToInt16(bytes(offset + paramDefOffset))
+                        row(j + 2) = CByte(bytes(offset + paramDefOffset))
                     Case "u16"
                         row(j + 2) = UIntFromTwo(offset + paramDefOffset)
                     Case "u32"
@@ -365,7 +358,7 @@ Public Class frmParamEdit
                     Case "f32"
                         InsBytes(offset + paramDefOffset, FloatToFourByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s8"
-                        InsBytes(offset + paramDefOffset, Int16ToTwoByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
+                        bytes(offset + paramDefOffset) = Convert.ToSByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue)
                     Case "s16"
                         InsBytes(offset + paramDefOffset, Int16ToTwoByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s32"
