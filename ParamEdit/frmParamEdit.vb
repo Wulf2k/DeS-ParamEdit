@@ -315,7 +315,10 @@ Public Class frmParamEdit
                     Case "s32"
                         row(j + 2) = SIntFromFour(offset + paramDefOffset)
                     Case "u8"
+                        'TODO:  Handle bitarrays
                         row(j + 2) = CByte(bytes(offset + paramDefOffset))
+
+
                     Case "u16"
                         row(j + 2) = UIntFromTwo(offset + paramDefOffset)
                     Case "u32"
