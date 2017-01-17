@@ -278,11 +278,22 @@ Public Class frmParamEdit
             paramSize = UIntFromFour(startOffset + &H64 + (entryLength * i))
             paramName = StrFromBytes(startOffset + &H8C + (entryLength * i))
 
+            If paramName.Contains(":") Then
+                paramType = "bool"
+                paramSize = 0
+            End If
+
+            If paramType = "dummy8" Then
+                paramSize = 0
+            End If
+
             paramDef(i).paramName = paramName
             paramDef(i).paramType = paramType
             paramDef(i).paramSize = paramSize
             paramDef(i).paramMin = paramMin
             paramDef(i).paramMax = paramMax
+
+            
 
             dgvParams.Columns.Add(paramDef(i).paramName, paramDef(i).paramName)
         Next
@@ -302,10 +313,33 @@ Public Class frmParamEdit
 
             paramDefOffset = 0
 
+            Dim bitarray = 1
+
+
             For j = 0 To paramDef.Length - 1
                 Select Case paramDef(j).paramType
+                    Case "bool"
+                        row(j + 2) = ((CByte(bytes(offset + paramDefOffset)) and bitarray) > 0)
+                        bitarray = bitarray * 2
+                        If bitarray = 256 Then
+                            bitarray = 1
+                            paramDefOffset += 1
+                        End If
                     Case "dummy8"
                         row(j + 2) = Nothing
+                        Dim pad = paramDef(j).paramName
+                        pad = pad.Replace("p", "")
+                        pad = pad.Replace("a", "")
+                        pad = pad.Replace("d", "")
+                        pad = pad.Replace("[", "")
+                        pad = pad.Replace("]", "")
+                        If bitarray > 1 Then
+                            bitarray = 1
+                            paramDefOffset += 1
+                        End If
+
+                        paramDefOffset += pad
+                        'MsgBox(Hex(offset + paramDefOffset))
                     Case "f32"
                         row(j + 2) = SingleFromFour(offset + paramDefOffset)
                     Case "s8"
@@ -315,10 +349,7 @@ Public Class frmParamEdit
                     Case "s32"
                         row(j + 2) = SIntFromFour(offset + paramDefOffset)
                     Case "u8"
-                        'TODO:  Handle bitarrays
                         row(j + 2) = CByte(bytes(offset + paramDefOffset))
-
-
                     Case "u16"
                         row(j + 2) = UIntFromTwo(offset + paramDefOffset)
                     Case "u32"
@@ -354,10 +385,42 @@ Public Class frmParamEdit
 
             offset = UIntFromFour(&H34 + (&HC * i))
 
+            Dim bitfield = 0
+            Dim bitval = 0
+
+
             For j = 0 To paramDef.Length - 1
                 Select Case paramDef(j).paramType
+                    Case "bool"
+                        If dgvParams.Rows(i).Cells(j + 2).FormattedValue = "True" Then
+                            'MsgBox(paramDef(j).paramName & " - " & dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                            bitval = bitval + 2 ^ bitfield
+                        End If
+                        bitfield += 1
+                        If bitfield = 8 Then
+                            bytes(offset + paramDefOffset) = Convert.ToByte(bitval)
+                            paramDefOffset += 1
+                            bitval = 0
+                            bitfield = 0
+                        End If
                     Case "dummy8"
-                        bytes(offset + paramDefOffset) = Convert.ToByte(0)
+                        Dim pad = paramDef(j).paramName
+                        pad = pad.Replace("p", "")
+                        pad = pad.Replace("a", "")
+                        pad = pad.Replace("d", "")
+                        pad = pad.Replace("[", "")
+                        pad = pad.Replace("]", "")
+
+                        If bitfield > 0 Then
+                            bitfield = 0
+                            bytes(offset + paramDefOffset) = Convert.ToByte(bitval)
+                            paramDefOffset += 1
+                        End If
+
+                        For k = 0 To val(pad) - 1
+                            bytes(offset + paramDefOffset) = Convert.ToByte(0)
+                            paramDefOffset += 1
+                        Next
                     Case "f32"
                         InsBytes(offset + paramDefOffset, FloatToFourByte(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s8"
