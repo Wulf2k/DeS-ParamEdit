@@ -328,18 +328,19 @@ Public Class frmParamEdit
                     Case "dummy8"
                         row(j + 2) = Nothing
                         Dim pad = paramDef(j).paramName
-                        pad = pad.Replace("p", "")
-                        pad = pad.Replace("a", "")
-                        pad = pad.Replace("d", "")
-                        pad = pad.Replace("[", "")
-                        pad = pad.Replace("]", "")
+
+                        If pad.Contains("[") Then
+                            pad = pad.Split("[")(1)
+                            pad = pad.Replace("]", "")
+                        End If
+
+
                         If bitarray > 1 Then
                             bitarray = 1
                             paramDefOffset += 1
                         End If
 
                         paramDefOffset += pad
-                        'MsgBox(Hex(offset + paramDefOffset))
                     Case "f32"
                         row(j + 2) = SingleFromFour(offset + paramDefOffset)
                     Case "s8"
@@ -393,7 +394,6 @@ Public Class frmParamEdit
                 Select Case paramDef(j).paramType
                     Case "bool"
                         If dgvParams.Rows(i).Cells(j + 2).FormattedValue = "True" Then
-                            'MsgBox(paramDef(j).paramName & " - " & dgvParams.Rows(i).Cells(j + 2).FormattedValue)
                             bitval = bitval + 2 ^ bitfield
                         End If
                         bitfield += 1
@@ -405,11 +405,11 @@ Public Class frmParamEdit
                         End If
                     Case "dummy8"
                         Dim pad = paramDef(j).paramName
-                        pad = pad.Replace("p", "")
-                        pad = pad.Replace("a", "")
-                        pad = pad.Replace("d", "")
-                        pad = pad.Replace("[", "")
-                        pad = pad.Replace("]", "")
+
+                        If pad.Contains("[") Then
+                            pad = pad.Split("[")(1)
+                            pad = pad.Replace("]", "")
+                        End If
 
                         If bitfield > 0 Then
                             bitfield = 0
