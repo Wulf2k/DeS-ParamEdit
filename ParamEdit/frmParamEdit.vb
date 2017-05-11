@@ -4,6 +4,15 @@ Imports System.Threading
 
 Public Class frmParamEdit
 
+
+
+    'TODO:  EquipParamWeapon - Figure out "WEP_BASE_CHANGE_CATEGORY:6"
+
+
+
+
+
+
     Shared Version As String
     Shared VersionCheckUrl As String = "http://wulf2k.ca/souls/ParamEdit-ver.txt"
 
@@ -316,16 +325,21 @@ Public Class frmParamEdit
             paramType = RAscStr(startOffset + &H40 + (entryLength * i))
             paramMin = RSingle(startOffset + &H54 + (entryLength * i))
             paramMax = RSingle(startOffset + &H58 + (entryLength * i))
-            paramSize = RUInt32(startOffset + &H64 + (entryLength * i))
+            paramSize = RUInt32(startOffset + &H64 + (entryLength * i)) * 8
             paramName = RAscStr(startOffset + &H8C + (entryLength * i))
 
             If paramName.Contains(":") Then
                 paramType = "bool"
-                paramSize = 0
+                paramSize = paramName.Split(":")(1)
             End If
 
             If paramType = "dummy8" Then
-                paramSize = 0
+                If paramName.Contains("[") Then
+                    paramSize = paramName.Split("[")(1).Replace("]", "") * 8
+                Else
+                    paramSize = 8
+                End If
+
             End If
 
             paramDef(i).paramName = paramName
@@ -364,11 +378,14 @@ Public Class frmParamEdit
                 Select Case paramDef(j).paramType
                     Case "bool"
                         row(j + 2) = ((RUInt8(offset + paramDefOffset) And bitarray) > 0)
-                        bitarray = bitarray * 2
-                        If bitarray = 256 Then
-                            bitarray = 1
-                            paramDefOffset += 1
-                        End If
+                        For p As UInteger = 0 To paramDef(j).paramSize - 1
+                            bitarray = bitarray * 2
+                            If bitarray = 256 Then
+                                bitarray = 1
+                                paramDefOffset += 1
+                            End If
+                        Next
+
                     Case "dummy8"
                         row(j + 2) = Nothing
                         Dim pad = paramDef(j).paramName
@@ -384,7 +401,7 @@ Public Class frmParamEdit
                             paramDefOffset += 1
                         End If
 
-                        paramDefOffset += pad
+                        'paramDefOffset += pad
                     Case "f32"
                         row(j + 2) = RSingle(offset + paramDefOffset)
                     Case "s8"
@@ -401,7 +418,7 @@ Public Class frmParamEdit
                         row(j + 2) = RUInt32(offset + paramDefOffset)
                 End Select
 
-                paramDefOffset += paramDef(j).paramSize
+                paramDefOffset += Math.Floor(paramDef(j).paramSize / 8)
 
 
             Next
@@ -442,13 +459,15 @@ Public Class frmParamEdit
                         If dgvParams.Rows(i).Cells(j + 2).FormattedValue = "True" Then
                             bitval = bitval + 2 ^ bitfield
                         End If
-                        bitfield += 1
-                        If bitfield = 8 Then
-                            WUInt8(offset + paramDefOffset, Convert.ToByte(bitval))
-                            paramDefOffset += 1
-                            bitval = 0
-                            bitfield = 0
-                        End If
+                        For p As UInteger = 0 To paramDef(j).paramSize - 1
+                            bitfield += 1
+                            If bitfield = 8 Then
+                                WUInt8(offset + paramDefOffset, Convert.ToByte(bitval))
+                                paramDefOffset += 1
+                                bitval = 0
+                                bitfield = 0
+                            End If
+                        Next
                     Case "dummy8"
                         Dim pad = paramDef(j).paramName
 
@@ -460,12 +479,12 @@ Public Class frmParamEdit
                         If bitfield > 0 Then
                             bitfield = 0
                             WUInt8(offset + paramDefOffset, Convert.ToByte(bitval))
+                            bitval = 0
                             paramDefOffset += 1
                         End If
 
-                        For k = 0 To val(pad) - 1
-                            WUInt8(offset + paramDefOffset, 0)
-                            paramDefOffset += 1
+                        For k = 0 To Val(pad) - 1
+                            'WUInt8(offset + paramDefOffset + k, 0)
                         Next
                     Case "f32"
                         WSingle(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
@@ -482,7 +501,7 @@ Public Class frmParamEdit
                     Case "u32"
                         WUInt32(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
                 End Select
-                paramDefOffset += paramDef(j).paramSize
+                paramDefOffset += Math.Floor(paramDef(j).paramSize / 8)
             Next
         Next
         fs.Close()
@@ -511,14 +530,14 @@ Public Class frmParamEdit
             If oldFileArg.EndsWith(".old") Then
                 Dim t = New Thread(
                     Sub()
-                    Try
-                        'Give the old version time to shut down
-                        Thread.Sleep(1000)
-                        File.Delete(oldFileArg)
-                    Catch ex As Exception
-                        Me.Invoke(Function() MsgBox("Deleting old version failed: " & vbCrLf & ex.Message, MsgBoxStyle.Exclamation))
-                    End Try
-                End Sub)
+                        Try
+                            'Give the old version time to shut down
+                            Thread.Sleep(1000)
+                            File.Delete(oldFileArg)
+                        Catch ex As Exception
+                            Me.Invoke(Function() MsgBox("Deleting old version failed: " & vbCrLf & ex.Message, MsgBoxStyle.Exclamation))
+                        End Try
+                    End Sub)
                 t.Start()
             Else
                 MsgBox("Deleting old version failed: Invalid filename ", MsgBoxStyle.Exclamation)
