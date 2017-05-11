@@ -70,7 +70,7 @@ Public Class frmParamEdit
 
 
     Private Function RSingle(ByVal loc As UInteger) As Single
-        Dim tmpSingle As UInteger = 0
+        Dim tmpSingle As Single = 0
         Dim byt = New Byte() {0, 0, 0, 0}
 
         fs.Position = loc
