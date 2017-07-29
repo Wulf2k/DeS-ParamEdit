@@ -328,9 +328,15 @@ Public Class frmParamEdit
             paramSize = RUInt32(startOffset + &H64 + (entryLength * i)) * 8
             paramName = RAscStr(startOffset + &H8C + (entryLength * i))
 
+
+
             If paramName.Contains(":") Then
-                paramType = "bool"
                 paramSize = paramName.Split(":")(1)
+                If paramSize = 1 Then
+                        paramType = "bool"
+                    Else
+                        paramType = "u8"
+                End If
             End If
 
             If paramType = "dummy8" Then
@@ -341,7 +347,6 @@ Public Class frmParamEdit
                 End If
 
             End If
-
             paramDef(i).paramName = paramName
             paramDef(i).paramType = paramType
             paramDef(i).paramSize = paramSize
@@ -411,7 +416,35 @@ Public Class frmParamEdit
                     Case "s32"
                         row(j + 2) = RInt32(offset + paramDefOffset)
                     Case "u8"
-                        row(j + 2) = RUInt8(offset + paramDefOffset)
+
+                        'row(j + 2) = RUInt8(offset + paramDefOffset)
+
+                        If paramDef(j).paramSize = 8 Then
+                            row(j + 2) = RUInt8(offset + paramDefOffset)
+                        Else
+                            Dim tmpu8 = 0
+
+                            
+                            For p As UInteger = 0 To paramDef(j).paramSize - 1
+
+                                If (RUInt8(offset + paramDefOffset) And bitarray) > 0 Then
+                                    tmpu8 = tmpu8 + 2 ^ p
+                                End If
+
+
+                                bitarray = bitarray * 2
+                                If bitarray = 256 Then
+                                    bitarray = 1
+                                    paramDefOffset += 1
+                                End If
+                            Next
+
+                            row(j + 2) = tmpu8
+
+
+
+
+                        End If
                     Case "u16"
                         row(j + 2) = RUInt16(offset + paramDefOffset)
                     Case "u32"
@@ -495,7 +528,26 @@ Public Class frmParamEdit
                     Case "s32"
                         WInt32(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
                     Case "u8"
-                        WUInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        'WUInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+
+                        If paramDef(j).paramSize = 8 Then
+                            WUInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        Else
+                            For p As UInteger = 0 To paramDef(j).paramSize - 1
+                                If (dgvParams.Rows(i).Cells(j + 2).FormattedValue And 2 ^ p) > 0 Then
+                                    bitval = bitval + 2 ^ bitfield
+                                End If
+
+                                bitfield += 1
+                                If bitfield = 8 Then
+                                    WUInt8(offset + paramDefOffset, Convert.ToByte(bitval))
+                                    paramDefOffset += 1
+                                    bitval = 0
+                                    bitfield = 0
+                                End If
+                            Next
+                        End If
+
                     Case "u16"
                         WUInt16(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
                     Case "u32"
