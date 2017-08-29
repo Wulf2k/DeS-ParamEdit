@@ -473,6 +473,9 @@ Public Class frmParamEdit
 
     End Sub
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+
+        'TODO: Create file from scratch instead of modifying existing.
+
         fs = New IO.FileStream(txtParam.Text, IO.FileMode.Open)
         Dim paramDefOffset As UInteger
         Dim offset As UInteger
