@@ -477,7 +477,7 @@ Public Class frmParamEdit
         Dim paramDefOffset As UInteger
         Dim offset As UInteger
 
-        For i = 0 To dgvParams.Rows.Count - 2
+        For i = 0 To dgvParams.Rows.Count - 1
             paramDefOffset = 0
 
             offset = RUInt32(&H34 + (&HC * i))
