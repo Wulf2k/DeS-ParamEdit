@@ -33,14 +33,20 @@ Partial Class frmParamEdit
         Me.btnSave = New System.Windows.Forms.Button()
         Me.btnUpdate = New System.Windows.Forms.Button()
         Me.lblVer = New System.Windows.Forms.Label()
-        CType(Me.dgvParams,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.SuspendLayout
+        Me.txtParamName = New System.Windows.Forms.TextBox()
+        Me.lblParamName = New System.Windows.Forms.Label()
+        Me.txtUnk0x8 = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtUnk0x6 = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        CType(Me.dgvParams, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
         '
         'txtParamdef
         '
-        Me.txtParamdef.AllowDrop = true
-        Me.txtParamdef.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left)  _
-            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.txtParamdef.AllowDrop = True
+        Me.txtParamdef.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtParamdef.Location = New System.Drawing.Point(89, 14)
         Me.txtParamdef.Name = "txtParamdef"
         Me.txtParamdef.Size = New System.Drawing.Size(440, 20)
@@ -48,7 +54,7 @@ Partial Class frmParamEdit
         '
         'lblGAFile
         '
-        Me.lblGAFile.AutoSize = true
+        Me.lblGAFile.AutoSize = True
         Me.lblGAFile.Location = New System.Drawing.Point(31, 17)
         Me.lblGAFile.Name = "lblGAFile"
         Me.lblGAFile.Size = New System.Drawing.Size(52, 13)
@@ -57,19 +63,19 @@ Partial Class frmParamEdit
         '
         'btnBrowseParamdef
         '
-        Me.btnBrowseParamdef.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.btnBrowseParamdef.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnBrowseParamdef.Location = New System.Drawing.Point(532, 12)
         Me.btnBrowseParamdef.Name = "btnBrowseParamdef"
         Me.btnBrowseParamdef.Size = New System.Drawing.Size(75, 23)
         Me.btnBrowseParamdef.TabIndex = 30
         Me.btnBrowseParamdef.Text = "Browse"
-        Me.btnBrowseParamdef.UseVisualStyleBackColor = true
+        Me.btnBrowseParamdef.UseVisualStyleBackColor = True
         '
         'txtParam
         '
-        Me.txtParam.AllowDrop = true
-        Me.txtParam.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left)  _
-            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.txtParam.AllowDrop = True
+        Me.txtParam.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtParam.Location = New System.Drawing.Point(89, 43)
         Me.txtParam.Name = "txtParam"
         Me.txtParam.Size = New System.Drawing.Size(440, 20)
@@ -77,7 +83,7 @@ Partial Class frmParamEdit
         '
         'Label1
         '
-        Me.Label1.AutoSize = true
+        Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(46, 46)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(37, 13)
@@ -86,46 +92,44 @@ Partial Class frmParamEdit
         '
         'btnBrowseParam
         '
-        Me.btnBrowseParam.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.btnBrowseParam.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnBrowseParam.Location = New System.Drawing.Point(532, 41)
         Me.btnBrowseParam.Name = "btnBrowseParam"
         Me.btnBrowseParam.Size = New System.Drawing.Size(75, 23)
         Me.btnBrowseParam.TabIndex = 33
         Me.btnBrowseParam.Text = "Browse"
-        Me.btnBrowseParam.UseVisualStyleBackColor = true
+        Me.btnBrowseParam.UseVisualStyleBackColor = True
         '
         'dgvParams
         '
-        Me.dgvParams.AllowUserToAddRows = false
-        Me.dgvParams.AllowUserToDeleteRows = false
-        Me.dgvParams.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom)  _
-            Or System.Windows.Forms.AnchorStyles.Left)  _
-            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.dgvParams.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvParams.Location = New System.Drawing.Point(12, 100)
+        Me.dgvParams.Location = New System.Drawing.Point(12, 125)
         Me.dgvParams.Name = "dgvParams"
-        Me.dgvParams.Size = New System.Drawing.Size(595, 510)
+        Me.dgvParams.Size = New System.Drawing.Size(595, 485)
         Me.dgvParams.TabIndex = 36
         '
         'btnOpen
         '
-        Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOpen.Location = New System.Drawing.Point(451, 70)
         Me.btnOpen.Name = "btnOpen"
         Me.btnOpen.Size = New System.Drawing.Size(75, 23)
         Me.btnOpen.TabIndex = 37
         Me.btnOpen.Text = "Open"
-        Me.btnOpen.UseVisualStyleBackColor = true
+        Me.btnOpen.UseVisualStyleBackColor = True
         '
         'btnSave
         '
-        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSave.Location = New System.Drawing.Point(532, 70)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(75, 23)
         Me.btnSave.TabIndex = 38
         Me.btnSave.Text = "Save"
-        Me.btnSave.UseVisualStyleBackColor = true
+        Me.btnSave.UseVisualStyleBackColor = True
         '
         'btnUpdate
         '
@@ -134,25 +138,82 @@ Partial Class frmParamEdit
         Me.btnUpdate.Size = New System.Drawing.Size(182, 23)
         Me.btnUpdate.TabIndex = 78
         Me.btnUpdate.Text = "Update Param Editor"
-        Me.btnUpdate.UseVisualStyleBackColor = true
-        Me.btnUpdate.Visible = false
+        Me.btnUpdate.UseVisualStyleBackColor = True
+        Me.btnUpdate.Visible = False
         '
         'lblVer
         '
-        Me.lblVer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
-        Me.lblVer.AutoSize = true
+        Me.lblVer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblVer.AutoSize = True
         Me.lblVer.ImeMode = System.Windows.Forms.ImeMode.NoControl
         Me.lblVer.Location = New System.Drawing.Point(369, 75)
         Me.lblVer.Name = "lblVer"
         Me.lblVer.Size = New System.Drawing.Size(76, 13)
         Me.lblVer.TabIndex = 77
-        Me.lblVer.Text = "2017.08.29.12"
+        Me.lblVer.Text = "2017.09.07.14"
+        '
+        'txtParamName
+        '
+        Me.txtParamName.AllowDrop = True
+        Me.txtParamName.Location = New System.Drawing.Point(89, 98)
+        Me.txtParamName.Name = "txtParamName"
+        Me.txtParamName.Size = New System.Drawing.Size(207, 20)
+        Me.txtParamName.TabIndex = 79
+        '
+        'lblParamName
+        '
+        Me.lblParamName.AutoSize = True
+        Me.lblParamName.Location = New System.Drawing.Point(12, 101)
+        Me.lblParamName.Name = "lblParamName"
+        Me.lblParamName.Size = New System.Drawing.Size(68, 13)
+        Me.lblParamName.TabIndex = 80
+        Me.lblParamName.Text = "Param Name"
+        '
+        'txtUnk0x8
+        '
+        Me.txtUnk0x8.AllowDrop = True
+        Me.txtUnk0x8.Location = New System.Drawing.Point(451, 98)
+        Me.txtUnk0x8.Name = "txtUnk0x8"
+        Me.txtUnk0x8.Size = New System.Drawing.Size(64, 20)
+        Me.txtUnk0x8.TabIndex = 81
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(415, 101)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(36, 13)
+        Me.Label2.TabIndex = 82
+        Me.Label2.Text = "(0x8?)"
+        '
+        'txtUnk0x6
+        '
+        Me.txtUnk0x6.AllowDrop = True
+        Me.txtUnk0x6.Location = New System.Drawing.Point(345, 98)
+        Me.txtUnk0x6.Name = "txtUnk0x6"
+        Me.txtUnk0x6.Size = New System.Drawing.Size(64, 20)
+        Me.txtUnk0x6.TabIndex = 83
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(309, 101)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(36, 13)
+        Me.Label3.TabIndex = 84
+        Me.Label3.Text = "(0x6?)"
         '
         'frmParamEdit
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(617, 618)
+        Me.Controls.Add(Me.txtUnk0x6)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.txtUnk0x8)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.txtParamName)
+        Me.Controls.Add(Me.lblParamName)
         Me.Controls.Add(Me.btnUpdate)
         Me.Controls.Add(Me.lblVer)
         Me.Controls.Add(Me.btnSave)
@@ -182,4 +243,10 @@ End Sub
     Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents btnUpdate As Button
     Friend WithEvents lblVer As Label
+    Friend WithEvents txtParamName As TextBox
+    Friend WithEvents lblParamName As Label
+    Friend WithEvents txtUnk0x8 As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtUnk0x6 As TextBox
+    Friend WithEvents Label3 As Label
 End Class

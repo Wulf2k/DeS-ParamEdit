@@ -4,12 +4,7 @@ Imports System.Threading
 
 Public Class frmParamEdit
 
-
-
-    'TODO:  EquipParamWeapon - Figure out "WEP_BASE_CHANGE_CATEGORY:6"
-
-
-
+    'TODO:  Properly add rows to allow numeric sorting instead of string sorting.
 
 
 
@@ -18,6 +13,7 @@ Public Class frmParamEdit
 
     Dim paramDef() As paramDefs
     Dim bigEndian As Boolean = True
+
 
     Dim fs As FileStream
 
@@ -181,20 +177,28 @@ Public Class frmParamEdit
         Dim len As Integer = 0
         Dim byt As Byte
 
+        Dim byts() As Byte = {}
+
+
         fs.Position = loc
 
         While cont
             byt = fs.ReadByte
 
             If byt > 0 Then
-                AscStr = AscStr & Convert.ToChar(byt)
+                ReDim Preserve byts(byts.Length)
+                Array.Copy({byt}, 0, byts, byts.Length - 1, 1)
+
             Else
                 cont = False
             End If
         End While
 
+        AscStr = System.Text.Encoding.GetEncoding("shift-jis").GetString(byts)
+
         Return AscStr
     End Function
+
 
     Private Sub WSingle(ByVal loc As UInteger, ByVal val As Single)
         fs.Position = loc
@@ -269,7 +273,7 @@ Public Class frmParamEdit
         fs.Position = loc
 
         Dim byt() As Byte
-        byt = System.Text.Encoding.ASCII.GetBytes(str)
+        byt = System.Text.Encoding.GetEncoding("shift-jis").GetBytes(str)
         fs.Write(byt, 0, byt.Length)
     End Sub
 
@@ -288,6 +292,7 @@ Public Class frmParamEdit
 
 
         fs = New IO.FileStream(txtParamdef.Text, IO.FileMode.Open)
+        'Start reading .paramdef file
 
         Dim length As UInteger
         Dim startOffset As UInteger
@@ -358,14 +363,22 @@ Public Class frmParamEdit
             dgvParams.Columns.Add(paramDef(i).paramName, paramDef(i).paramName)
         Next
         fs.Close()
+        'End reading .paramdef file
 
 
+        dgvParams.Columns.Add("description", "Description")
+
+
+        'Start reading .param file
         fs = New IO.FileStream(txtParam.Text, IO.FileMode.Open)
 
+        txtUnk0x6.Text = RUInt16(&H6)
+        txtUnk0x8.Text = RUInt16(&H8)
         numEntries = RUInt16(&HA)
+        txtParamName.Text = RAscStr(&HC)
 
         For i = 0 To numEntries - 1
-            Dim row(paramDef.Count + 2) As String
+            Dim row(paramDef.Count + 3) As String
 
             row(0) = Hex(RUInt32(&H30 + (&HC * i)))
             row(1) = RUInt32(&H30 + (&HC * i))
@@ -424,7 +437,7 @@ Public Class frmParamEdit
                         Else
                             Dim tmpu8 = 0
 
-                            
+
                             For p As UInteger = 0 To paramDef(j).paramSize - 1
 
                                 If (RUInt8(offset + paramDefOffset) And bitarray) > 0 Then
@@ -456,6 +469,8 @@ Public Class frmParamEdit
 
             Next
 
+            row(row.Length - 2) = RAscStr(RUInt32(&H38 + (&HC * i)))
+
             dgvParams.Rows.Add(row)
 
             offset = RUInt32(&H38 + (&HC * i))
@@ -474,20 +489,90 @@ Public Class frmParamEdit
     End Sub
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
 
-        'TODO: Create file from scratch instead of modifying existing.
 
-        fs = New IO.FileStream(txtParam.Text, IO.FileMode.Open)
+
+
+        fs = New IO.FileStream(txtParam.Text, IO.FileMode.Create)
+
+        Dim paramTotalSize As Integer = 0
         Dim paramDefOffset As UInteger
+        Dim paramDescOffset As Integer
         Dim offset As UInteger
 
-        For i = 0 To dgvParams.Rows.Count - 1
-            paramDefOffset = 0
+        Dim desc As String
 
-            offset = RUInt32(&H34 + (&HC * i))
+
+        'Define paramTotalSize through dark, eldritch magic
+        Dim bitarray = 1
+        For j = 0 To paramDef.Length - 1
+            Select Case paramDef(j).paramType
+                Case "bool"
+                    For p As UInteger = 0 To paramDef(j).paramSize - 1
+                        bitarray = bitarray * 2
+                        If bitarray = 256 Then
+                            bitarray = 1
+                            paramTotalSize += 1
+                        End If
+                    Next
+                Case "dummy8"
+                    If bitarray > 1 Then
+                        bitarray = 1
+                        paramTotalSize += 1
+                    End If
+                Case "u8"
+                    If Not paramDef(j).paramSize = 8 Then
+                        For p As UInteger = 0 To paramDef(j).paramSize - 1
+                            bitarray = bitarray * 2
+                            If bitarray = 256 Then
+                                bitarray = 1
+                                paramTotalSize += 1
+                            End If
+                        Next
+                    End If
+            End Select
+
+            paramTotalSize += Math.Floor(paramDef(j).paramSize / 8)
+        Next
+
+
+
+
+        Dim paramDataStart As Integer = &H30 + (dgvParams.Rows.Count - 1) * &HC
+        Dim ParamDescStart As Integer = paramDataStart + ((dgvParams.Rows.Count - 1) * paramTotalSize)
+
+        WInt32(0, ParamDescStart)
+        WInt32(4, paramDataStart)
+
+
+        'Unknown flags, should be split to bytes instad of Int16s
+        WInt16(&H6, txtUnk0x6.Text)
+        WInt16(&H8, txtUnk0x8.Text)
+
+
+        WInt16(&HA, dgvParams.Rows.Count - 1)
+        WAscStr(&HC, txtParamName.Text)
+
+        'Unknown hardcoded value
+        WInt32(&H2C, &H200)
+
+
+        paramDescOffset = ParamDescStart
+        For i = 0 To dgvParams.Rows.Count - 2
+            paramDefOffset = 0
+            offset = paramDataStart + (paramTotalSize * i)
+
+            WInt32(&H30 + (i * &HC), Val(dgvParams.Rows(i).Cells("ID (Dec)").Value))
+            WInt32(&H34 + (i * &HC), offset)
+            WInt32(&H38 + (i * &HC), paramDescOffset)
+
+            desc = dgvParams.Rows(i).Cells("Description").Value & Chr(0)
+            WAscStr(paramDescOffset, desc)
+            paramDescOffset += System.Text.Encoding.GetEncoding("shift-jis").GetBytes(desc).Length
+
+
 
             Dim bitfield = 0
             Dim bitval = 0
-
 
             For j = 0 To paramDef.Length - 1
                 Select Case paramDef(j).paramType
@@ -519,25 +604,20 @@ Public Class frmParamEdit
                             paramDefOffset += 1
                         End If
 
-                        For k = 0 To Val(pad) - 1
-                            'WUInt8(offset + paramDefOffset + k, 0)
-                        Next
                     Case "f32"
-                        WSingle(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WSingle(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s8"
-                        WInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WInt8(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s16"
-                        WInt16(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WInt16(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "s32"
-                        WInt32(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WInt32(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "u8"
-                        'WUInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
-
                         If paramDef(j).paramSize = 8 Then
-                            WUInt8(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                            WUInt8(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                         Else
                             For p As UInteger = 0 To paramDef(j).paramSize - 1
-                                If (dgvParams.Rows(i).Cells(j + 2).FormattedValue And 2 ^ p) > 0 Then
+                                If (val(dgvParams.Rows(i).Cells(j + 2).FormattedValue) And 2 ^ p) > 0 Then
                                     bitval = bitval + 2 ^ bitfield
                                 End If
 
@@ -552,9 +632,9 @@ Public Class frmParamEdit
                         End If
 
                     Case "u16"
-                        WUInt16(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WUInt16(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                     Case "u32"
-                        WUInt32(offset + paramDefOffset, dgvParams.Rows(i).Cells(j + 2).FormattedValue)
+                        WUInt32(offset + paramDefOffset, Val(dgvParams.Rows(i).Cells(j + 2).FormattedValue))
                 End Select
                 paramDefOffset += Math.Floor(paramDef(j).paramSize / 8)
             Next
