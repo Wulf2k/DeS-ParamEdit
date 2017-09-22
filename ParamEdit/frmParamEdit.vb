@@ -15,6 +15,13 @@ Public Class frmParamEdit
     Dim bigEndian As Boolean = True
 
 
+
+    Private fromIndex As Integer
+    Private dragIndex As Integer
+    Private dragRect As Rectangle
+
+
+
     Dim fs As FileStream
 
 
@@ -27,6 +34,49 @@ Public Class frmParamEdit
         Public paramMin As Single
         Public paramMax As Single
     End Structure
+
+    Private Sub DdgvParams_DragDrop(ByVal sender As Object,
+                                   ByVal e As DragEventArgs) _
+                                   Handles dgvParams.DragDrop
+        Dim p As Point = dgvParams.PointToClient(New Point(e.X, e.Y))
+        dragIndex = dgvParams.HitTest(p.X, p.Y).RowIndex
+        If (e.Effect = DragDropEffects.Move) Then
+            Dim dragRow As DataGridViewRow = e.Data.GetData(GetType(DataGridViewRow))
+            dgvParams.Rows.RemoveAt(fromIndex)
+            dgvParams.Rows.Insert(dragIndex, dragRow)
+        End If
+    End Sub
+
+    Private Sub dgvParams_DragOver(ByVal sender As Object,
+                                   ByVal e As DragEventArgs) _
+                                   Handles dgvParams.DragOver
+        e.Effect = DragDropEffects.Move
+    End Sub
+    Private Sub DataGridView1_MouseDown(ByVal sender As Object,
+                                    ByVal e As MouseEventArgs) _
+                                    Handles dgvParams.MouseDown
+        fromIndex = dgvParams.HitTest(e.X, e.Y).RowIndex
+        If fromIndex > -1 Then
+            Dim dragSize As Size = SystemInformation.DragSize
+            dragRect = New Rectangle(New Point(e.X - (dragSize.Width / 2),
+                                       e.Y - (dragSize.Height / 2)),
+                             dragSize)
+        Else
+            dragRect = Rectangle.Empty
+        End If
+    End Sub
+
+    Private Sub DataGridView1_MouseMove(ByVal sender As Object,
+                                    ByVal e As MouseEventArgs) _
+                                    Handles dgvParams.MouseMove
+        If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
+            If (dragRect <> Rectangle.Empty _
+    AndAlso Not dragRect.Contains(e.X, e.Y)) Then
+                dgvParams.DoDragDrop(dgvParams.Rows(fromIndex),
+                               DragDropEffects.Move)
+            End If
+        End If
+    End Sub
 
     Private Async Sub updatecheck()
         Try
@@ -291,6 +341,7 @@ Public Class frmParamEdit
         dgvParams.Columns.Clear()
 
 
+        'I don't support your empty textboxes, but I will fight to the death for your right to have them.
         If txtParamdef.Text = "" Then
             MsgBox("No paramdef entered.")
             Return

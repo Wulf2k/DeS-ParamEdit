@@ -104,6 +104,7 @@ Partial Class frmParamEdit
         '
         'dgvParams
         '
+        Me.dgvParams.AllowDrop = True
         Me.dgvParams.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -152,7 +153,7 @@ Partial Class frmParamEdit
         Me.lblVer.Name = "lblVer"
         Me.lblVer.Size = New System.Drawing.Size(76, 13)
         Me.lblVer.TabIndex = 77
-        Me.lblVer.Text = "2017.09.22.17"
+        Me.lblVer.Text = "2017.09.22.18"
         '
         'txtParamName
         '
