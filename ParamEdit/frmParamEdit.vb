@@ -291,6 +291,25 @@ Public Class frmParamEdit
         dgvParams.Columns.Clear()
 
 
+        If txtParamdef.Text = "" Then
+            MsgBox("No paramdef entered.")
+            Return
+        End If
+        If txtParam.Text = "" Then
+            MsgBox("No param entered.")
+            Return
+        End If
+
+        If Not File.Exists(txtParamdef.Text) Then
+            MsgBox("Paramdef not found.")
+            Return
+        End If
+        If Not File.Exists(txtParam.Text) Then
+            MsgBox("Param not found.")
+            Return
+        End If
+
+
         fs = New IO.FileStream(txtParamdef.Text, IO.FileMode.Open)
         'Start reading .paramdef file
 
