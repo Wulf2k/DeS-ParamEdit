@@ -691,4 +691,44 @@ Public Class frmParamEdit
             Me.Close()
         End If
     End Sub
+
+    Private Sub btnExportCSV_Click(sender As Object, e As EventArgs) Handles btnExportCSV.Click
+        Dim entries As New List(Of String)
+        Dim str As String
+
+        For Each row As DataGridViewRow In dgvParams.Rows
+            str = ""
+            For Each cell As DataGridViewCell In row.Cells
+                str = str & cell.FormattedValue & "|"
+            Next
+
+
+            'entries.Add((row.Cells("ID").FormattedValue & "|" & row.Cells("Text").FormattedValue))
+            entries.Add(str)
+        Next
+
+        File.WriteAllLines(txtParam.Text & ".csv", entries)
+        MsgBox("Successfully exported to " & txtParam.Text & ".csv")
+    End Sub
+
+    Private Sub btnImportCSV_Click(sender As Object, e As EventArgs) Handles btnImportCSV.Click
+        Dim row As New List(Of String)
+
+        If File.Exists(txtParam.Text & ".csv") Then
+            dgvParams.Rows.Clear()
+
+            Dim entries = File.ReadAllLines(txtParam.Text & ".csv")
+            For Each entry In entries
+
+                For Each cell In entry.Split("|")
+                    row.Add(cell)
+                Next
+                dgvParams.Rows.Add(row.ToArray)
+                row.Clear()
+                'dgvParams.Rows.Add({entry.Split("|")(0), entry.Split("|")(1)})
+            Next
+        Else
+            MsgBox(txtParam.Text & ".csv not found.")
+        End If
+    End Sub
 End Class

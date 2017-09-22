@@ -39,6 +39,8 @@ Partial Class frmParamEdit
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtUnk0x6 = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.btnExportCSV = New System.Windows.Forms.Button()
+        Me.btnImportCSV = New System.Windows.Forms.Button()
         CType(Me.dgvParams, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -106,9 +108,9 @@ Partial Class frmParamEdit
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvParams.Location = New System.Drawing.Point(12, 125)
+        Me.dgvParams.Location = New System.Drawing.Point(12, 147)
         Me.dgvParams.Name = "dgvParams"
-        Me.dgvParams.Size = New System.Drawing.Size(595, 485)
+        Me.dgvParams.Size = New System.Drawing.Size(595, 463)
         Me.dgvParams.TabIndex = 36
         '
         'btnOpen
@@ -116,7 +118,7 @@ Partial Class frmParamEdit
         Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOpen.Location = New System.Drawing.Point(451, 70)
         Me.btnOpen.Name = "btnOpen"
-        Me.btnOpen.Size = New System.Drawing.Size(75, 23)
+        Me.btnOpen.Size = New System.Drawing.Size(78, 23)
         Me.btnOpen.TabIndex = 37
         Me.btnOpen.Text = "Open"
         Me.btnOpen.UseVisualStyleBackColor = True
@@ -146,16 +148,16 @@ Partial Class frmParamEdit
         Me.lblVer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblVer.AutoSize = True
         Me.lblVer.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lblVer.Location = New System.Drawing.Point(369, 75)
+        Me.lblVer.Location = New System.Drawing.Point(531, 128)
         Me.lblVer.Name = "lblVer"
         Me.lblVer.Size = New System.Drawing.Size(76, 13)
         Me.lblVer.TabIndex = 77
-        Me.lblVer.Text = "2017.09.07.14"
+        Me.lblVer.Text = "2017.09.22.15"
         '
         'txtParamName
         '
         Me.txtParamName.AllowDrop = True
-        Me.txtParamName.Location = New System.Drawing.Point(89, 98)
+        Me.txtParamName.Location = New System.Drawing.Point(89, 125)
         Me.txtParamName.Name = "txtParamName"
         Me.txtParamName.Size = New System.Drawing.Size(207, 20)
         Me.txtParamName.TabIndex = 79
@@ -163,7 +165,7 @@ Partial Class frmParamEdit
         'lblParamName
         '
         Me.lblParamName.AutoSize = True
-        Me.lblParamName.Location = New System.Drawing.Point(12, 101)
+        Me.lblParamName.Location = New System.Drawing.Point(12, 128)
         Me.lblParamName.Name = "lblParamName"
         Me.lblParamName.Size = New System.Drawing.Size(68, 13)
         Me.lblParamName.TabIndex = 80
@@ -172,7 +174,7 @@ Partial Class frmParamEdit
         'txtUnk0x8
         '
         Me.txtUnk0x8.AllowDrop = True
-        Me.txtUnk0x8.Location = New System.Drawing.Point(451, 98)
+        Me.txtUnk0x8.Location = New System.Drawing.Point(341, 125)
         Me.txtUnk0x8.Name = "txtUnk0x8"
         Me.txtUnk0x8.Size = New System.Drawing.Size(64, 20)
         Me.txtUnk0x8.TabIndex = 81
@@ -180,7 +182,7 @@ Partial Class frmParamEdit
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(415, 101)
+        Me.Label2.Location = New System.Drawing.Point(305, 128)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(36, 13)
         Me.Label2.TabIndex = 82
@@ -189,7 +191,7 @@ Partial Class frmParamEdit
         'txtUnk0x6
         '
         Me.txtUnk0x6.AllowDrop = True
-        Me.txtUnk0x6.Location = New System.Drawing.Point(345, 98)
+        Me.txtUnk0x6.Location = New System.Drawing.Point(341, 99)
         Me.txtUnk0x6.Name = "txtUnk0x6"
         Me.txtUnk0x6.Size = New System.Drawing.Size(64, 20)
         Me.txtUnk0x6.TabIndex = 83
@@ -197,17 +199,39 @@ Partial Class frmParamEdit
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(309, 101)
+        Me.Label3.Location = New System.Drawing.Point(305, 102)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(36, 13)
         Me.Label3.TabIndex = 84
         Me.Label3.Text = "(0x6?)"
+        '
+        'btnExportCSV
+        '
+        Me.btnExportCSV.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnExportCSV.Location = New System.Drawing.Point(532, 99)
+        Me.btnExportCSV.Name = "btnExportCSV"
+        Me.btnExportCSV.Size = New System.Drawing.Size(75, 23)
+        Me.btnExportCSV.TabIndex = 86
+        Me.btnExportCSV.Text = "Export CSV"
+        Me.btnExportCSV.UseVisualStyleBackColor = True
+        '
+        'btnImportCSV
+        '
+        Me.btnImportCSV.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnImportCSV.Location = New System.Drawing.Point(454, 99)
+        Me.btnImportCSV.Name = "btnImportCSV"
+        Me.btnImportCSV.Size = New System.Drawing.Size(75, 23)
+        Me.btnImportCSV.TabIndex = 85
+        Me.btnImportCSV.Text = "Import CSV"
+        Me.btnImportCSV.UseVisualStyleBackColor = True
         '
         'frmParamEdit
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(617, 618)
+        Me.Controls.Add(Me.btnExportCSV)
+        Me.Controls.Add(Me.btnImportCSV)
         Me.Controls.Add(Me.txtUnk0x6)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtUnk0x8)
@@ -249,4 +273,6 @@ End Sub
     Friend WithEvents Label2 As Label
     Friend WithEvents txtUnk0x6 As TextBox
     Friend WithEvents Label3 As Label
+    Friend WithEvents btnExportCSV As Button
+    Friend WithEvents btnImportCSV As Button
 End Class
