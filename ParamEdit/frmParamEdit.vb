@@ -698,13 +698,13 @@ Public Class frmParamEdit
 
         For Each row As DataGridViewRow In dgvParams.Rows
             str = ""
-            For Each cell As DataGridViewCell In row.Cells
-                str = str & cell.FormattedValue & "|"
-            Next
+            If Not row.Cells(0).FormattedValue = "" Then
+                For Each cell As DataGridViewCell In row.Cells
+                    str = str & cell.FormattedValue & "|"
+                Next
+                entries.Add(str)
+            End If
 
-
-            'entries.Add((row.Cells("ID").FormattedValue & "|" & row.Cells("Text").FormattedValue))
-            entries.Add(str)
         Next
 
         File.WriteAllLines(txtParam.Text & ".csv", entries)
@@ -725,8 +725,8 @@ Public Class frmParamEdit
                 Next
                 dgvParams.Rows.Add(row.ToArray)
                 row.Clear()
-                'dgvParams.Rows.Add({entry.Split("|")(0), entry.Split("|")(1)})
             Next
+
         Else
             MsgBox(txtParam.Text & ".csv not found.")
         End If
