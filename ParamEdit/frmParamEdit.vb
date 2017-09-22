@@ -15,7 +15,7 @@ Public Class frmParamEdit
     Dim bigEndian As Boolean = True
 
 
-
+    'To allow drag and drop re-ordering of items
     Private fromIndex As Integer
     Private dragIndex As Integer
     Private dragRect As Rectangle
@@ -35,9 +35,12 @@ Public Class frmParamEdit
         Public paramMax As Single
     End Structure
 
-    Private Sub DdgvParams_DragDrop(ByVal sender As Object,
-                                   ByVal e As DragEventArgs) _
-                                   Handles dgvParams.DragDrop
+
+
+
+
+    'Drag 'n Drop re-ordering support
+    Private Sub DdgvParams_DragDrop(ByVal sender As Object, ByVal e As DragEventArgs) Handles dgvParams.DragDrop
         Dim p As Point = dgvParams.PointToClient(New Point(e.X, e.Y))
         dragIndex = dgvParams.HitTest(p.X, p.Y).RowIndex
         If (e.Effect = DragDropEffects.Move) Then
@@ -46,38 +49,30 @@ Public Class frmParamEdit
             dgvParams.Rows.Insert(dragIndex, dragRow)
         End If
     End Sub
-
-    Private Sub dgvParams_DragOver(ByVal sender As Object,
-                                   ByVal e As DragEventArgs) _
-                                   Handles dgvParams.DragOver
+    Private Sub dgvParams_DragOver(ByVal sender As Object, ByVal e As DragEventArgs) Handles dgvParams.DragOver
         e.Effect = DragDropEffects.Move
     End Sub
-    Private Sub DataGridView1_MouseDown(ByVal sender As Object,
-                                    ByVal e As MouseEventArgs) _
-                                    Handles dgvParams.MouseDown
+    Private Sub DataGridView1_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles dgvParams.MouseDown
         fromIndex = dgvParams.HitTest(e.X, e.Y).RowIndex
         If fromIndex > -1 Then
             Dim dragSize As Size = SystemInformation.DragSize
-            dragRect = New Rectangle(New Point(e.X - (dragSize.Width / 2),
-                                       e.Y - (dragSize.Height / 2)),
-                             dragSize)
+            dragRect = New Rectangle(New Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize)
         Else
             dragRect = Rectangle.Empty
         End If
     End Sub
 
-    Private Sub DataGridView1_MouseMove(ByVal sender As Object,
-                                    ByVal e As MouseEventArgs) _
-                                    Handles dgvParams.MouseMove
+    Private Sub DataGridView1_MouseMove(ByVal sender As Object, ByVal e As MouseEventArgs) Handles dgvParams.MouseMove
         If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
-            If (dragRect <> Rectangle.Empty _
-    AndAlso Not dragRect.Contains(e.X, e.Y)) Then
-                dgvParams.DoDragDrop(dgvParams.Rows(fromIndex),
-                               DragDropEffects.Move)
+            If (dragRect <> Rectangle.Empty AndAlso Not dragRect.Contains(e.X, e.Y)) Then
+                dgvParams.DoDragDrop(dgvParams.Rows(fromIndex), DragDropEffects.Move)
             End If
         End If
     End Sub
 
+
+
+    'Update Check
     Private Async Sub updatecheck()
         Try
             Dim client As New Net.WebClient()
@@ -97,9 +92,10 @@ Public Class frmParamEdit
         End Try
     End Sub
 
+
+
+    'File Browsing
     Private Sub btnBrowseParamdef_Click(sender As Object, e As EventArgs) Handles btnBrowseParamdef.Click
-
-
         Dim openDlg As New OpenFileDialog()
 
         openDlg.Filter = "Paramdef File|*paramdef"
@@ -108,8 +104,6 @@ Public Class frmParamEdit
         If openDlg.ShowDialog() = Windows.Forms.DialogResult.OK Then
             txtParamdef.Text = openDlg.FileName
         End If
-
-
     End Sub
     Private Sub btnBrowseParam_Click(sender As Object, e As EventArgs) Handles btnBrowseParam.Click
         Dim openDlg As New OpenFileDialog()
@@ -124,6 +118,7 @@ Public Class frmParamEdit
 
 
 
+    'File Access Functions
     Private Function RSingle(ByVal loc As UInteger) As Single
         Dim tmpSingle As Single = 0
         Dim byt = New Byte() {0, 0, 0, 0}
@@ -328,6 +323,8 @@ Public Class frmParamEdit
     End Sub
 
 
+
+    'Drag 'n Drop filenames to open
     Private Sub txt_Drop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtParamdef.DragDrop, txtParam.DragDrop
         Dim file() As String = e.Data.GetData(DataFormats.FileDrop)
         sender.Text = file(0)
@@ -336,6 +333,10 @@ Public Class frmParamEdit
         e.Effect = DragDropEffects.Copy
     End Sub
 
+
+
+
+    'Open File
     Private Sub btnOpen_Click(sender As Object, e As EventArgs) Handles btnOpen.Click
         dgvParams.Rows.Clear()
         dgvParams.Columns.Clear()
@@ -408,9 +409,9 @@ Public Class frmParamEdit
             If paramName.Contains(":") Then
                 paramSize = paramName.Split(":")(1)
                 If paramSize = 1 Then
-                        paramType = "bool"
-                    Else
-                        paramType = "u8"
+                    paramType = "bool"
+                Else
+                    paramType = "u8"
                 End If
             End If
 
@@ -557,11 +558,11 @@ Public Class frmParamEdit
 
 
     End Sub
+
+
+
+    'Save Param File
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-
-
-
-
         fs = New IO.FileStream(txtParam.Text, IO.FileMode.Create)
 
         Dim paramTotalSize As Integer = 0
@@ -713,6 +714,10 @@ Public Class frmParamEdit
         MsgBox("Save complete.")
     End Sub
 
+
+
+
+    'Form Load Operations
     Private Sub ParamEdit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim systemType As Type = dgvParams.GetType()
         Dim propertyInfo As PropertyInfo = systemType.GetProperty("DoubleBuffered", BindingFlags.Instance Or BindingFlags.NonPublic)
@@ -753,6 +758,9 @@ Public Class frmParamEdit
         updatecheck()
     End Sub
 
+
+
+    'Initiate Update
     Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
         Dim updateWindow As New UpdateWindow(sender.tag)
         updateWindow.ShowDialog()
@@ -762,6 +770,9 @@ Public Class frmParamEdit
         End If
     End Sub
 
+
+
+    'CSV Handling (With | instead of , )
     Private Sub btnExportCSV_Click(sender As Object, e As EventArgs) Handles btnExportCSV.Click
         Dim entries As New List(Of String)
         Dim str As String
@@ -774,13 +785,11 @@ Public Class frmParamEdit
                 Next
                 entries.Add(str)
             End If
-
         Next
 
         File.WriteAllLines(txtParam.Text & ".csv", entries)
         MsgBox("Successfully exported to " & txtParam.Text & ".csv")
     End Sub
-
     Private Sub btnImportCSV_Click(sender As Object, e As EventArgs) Handles btnImportCSV.Click
         Dim row As New List(Of String)
 
