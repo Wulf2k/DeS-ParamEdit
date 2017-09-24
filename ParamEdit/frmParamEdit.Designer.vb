@@ -153,7 +153,7 @@ Partial Class frmParamEdit
         Me.lblVer.Name = "lblVer"
         Me.lblVer.Size = New System.Drawing.Size(76, 13)
         Me.lblVer.TabIndex = 77
-        Me.lblVer.Text = "2017.09.22.18"
+        Me.lblVer.Text = "2017.09.23.23"
         '
         'txtParamName
         '
