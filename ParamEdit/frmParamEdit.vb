@@ -810,4 +810,58 @@ Public Class frmParamEdit
             MsgBox(txtParam.Text & ".csv not found.")
         End If
     End Sub
+
+    Private Sub onDgvKeyDown(sender As Object, e As KeyEventArgs) Handles dgvParams.KeyDown
+        If (e.Modifiers = Keys.Control AndAlso e.KeyCode = Keys.V) = False Then
+            Return
+        End If
+
+        Dim o = CType(Clipboard.GetDataObject(), DataObject)
+        If o.GetDataPresent(DataFormats.Text) = False Then
+            Return
+        End If
+        Dim text = o.GetData(DataFormats.Text).ToString
+        text = text.Replace(vbCr, "").TrimEnd(vbLf)
+        Dim lines As String() = text.Split(vbLf)
+
+        Dim sourceRows = New List(Of String())(lines.Length)
+        Dim sourceMaxColumnCount = 0
+        Dim sourceRowCount = lines.Length
+        For i = 0 To lines.Length - 1
+            Dim words = lines(i).Split(vbTab)
+            sourceRows.Add(words)
+
+            If words.Count > sourceMaxColumnCount Then
+                sourceMaxColumnCount = words.Count
+            End If
+        Next
+
+        Dim dgv = CType(sender, DataGridView)
+
+        Dim cell As DataGridViewCell = dgv.SelectedCells(dgv.SelectedCells.Count - 1)
+        Dim startColumn = cell.ColumnIndex
+        Dim endColumn = startColumn + sourceMaxColumnCount - 1
+        Dim startRow = cell.RowIndex
+        Dim endRow = startRow + sourceRowCount - 1
+
+        If endRow > dgv.RowCount - 1 Then
+            endRow = dgv.RowCount - 1
+        End If
+        If endColumn > dgv.ColumnCount - 1 Then
+            endColumn = dgv.ColumnCount - 1
+        End If
+
+        Dim destColumnCount = endColumn - startColumn + 1
+        Dim destRowCount = endRow - startRow + 1
+
+        For x = 0 To destColumnCount - 1
+            For y = 0 To destRowCount - 1
+                Dim newValue As String = ""
+                If x < sourceRows(y).Count Then
+                    newValue = sourceRows(y)(x)
+                End If
+                dgv.Rows(startRow + y).Cells(startColumn + x).Value = newValue
+            Next
+        Next
+    End Sub
 End Class
