@@ -556,6 +556,7 @@ Public Class frmParamEdit
             column.SortMode = DataGridViewColumnSortMode.NotSortable
         Next
 
+        Text = $"{New FileInfo(txtParam.Text).Name} - Wulf's Souls Series Parameter Editor"
 
     End Sub
 
@@ -712,6 +713,9 @@ Public Class frmParamEdit
         Next
         fs.Close()
         MsgBox("Save complete.")
+
+        Text = $"{New FileInfo(txtParam.Text).Name} - Wulf's Souls Series Parameter Editor"
+
     End Sub
 
 
