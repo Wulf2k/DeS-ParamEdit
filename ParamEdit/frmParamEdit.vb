@@ -407,6 +407,14 @@ Public Class frmParamEdit
 
 
             If paramName.Contains(":") Then
+
+                'Ugly goddamn hack for DaS - SpEffectVfx.paramdef
+                'Fromsoft left a 0x06, 0x09 in a numeric field.
+                If paramName.Contains(ChrW(6)) Then
+                    paramName = paramName.Split(ChrW(6))(0)
+                End If
+
+
                 paramSize = paramName.Split(":")(1)
                 If paramSize = 1 Then
                     paramType = "bool"
