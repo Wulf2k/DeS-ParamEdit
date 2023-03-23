@@ -9,7 +9,6 @@ Public Class frmParamEdit
 
 
     Shared Version As String
-    Shared VersionCheckUrl As String = "http://wulf2k.ca/souls/ParamEdit-ver.txt"
 
     Dim paramDef() As paramDefs
     Dim bigEndian As Boolean = True
@@ -71,26 +70,6 @@ Public Class frmParamEdit
     End Sub
 
 
-
-    'Update Check
-    Private Async Sub updatecheck()
-        Try
-            Dim client As New Net.WebClient()
-            Dim content As String = Await client.DownloadStringTaskAsync(VersionCheckUrl)
-
-            Dim lines() As String = content.Split({vbCrLf, vbLf}, StringSplitOptions.None)
-            Dim latestVersion = lines(0)
-            Dim latestUrl = lines(1)
-
-            If latestVersion > Version.Replace(".", "") Then
-                btnUpdate.Tag = latestUrl
-                btnUpdate.Visible = True
-            End If
-
-        Catch ex As Exception
-
-        End Try
-    End Sub
 
 
 
@@ -738,49 +717,10 @@ Public Class frmParamEdit
 
         Version = lblVer.Text
 
-        Dim oldFileArg As String = Nothing
-        For Each arg In Environment.GetCommandLineArgs().Skip(1)
-            If arg.StartsWith("--old-file=") Then
-                oldFileArg = arg.Substring("--old-file=".Length)
-            Else
-                MsgBox("Unknown command line arguments")
-                oldFileArg = Nothing
-                Exit For
-            End If
-        Next
-        If oldFileArg IsNot Nothing Then
-            If oldFileArg.EndsWith(".old") Then
-                Dim t = New Thread(
-                    Sub()
-                        Try
-                            'Give the old version time to shut down
-                            Thread.Sleep(1000)
-                            File.Delete(oldFileArg)
-                        Catch ex As Exception
-                            Me.Invoke(Function() MsgBox("Deleting old version failed: " & vbCrLf & ex.Message, MsgBoxStyle.Exclamation))
-                        End Try
-                    End Sub)
-                t.Start()
-            Else
-                MsgBox("Deleting old version failed: Invalid filename ", MsgBoxStyle.Exclamation)
-            End If
-        End If
 
-
-        updatecheck()
     End Sub
 
 
-
-    'Initiate Update
-    Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
-        Dim updateWindow As New UpdateWindow(sender.tag)
-        updateWindow.ShowDialog()
-        If updateWindow.WasSuccessful Then
-            Process.Start(updateWindow.NewAssembly, """--old-file=" & updateWindow.OldAssembly & """")
-            Me.Close()
-        End If
-    End Sub
 
 
 

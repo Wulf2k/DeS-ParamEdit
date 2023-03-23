@@ -1,6 +1,6 @@
 # NuGet packages
 /packages
-
+/.vs
 # Build copy of readme
 Readme_compiled.html
 
